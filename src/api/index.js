@@ -28,4 +28,10 @@ export const reqAddOrUpdateCart =(skuId,skuNum) => requests({url:`/cart/addToCar
 //获取购物车数据
 export const reqGetShopCart = () => requests({url:'/cart/cartList',method:'get'})
 //修改某一个商品的勾选的状态
-export const reqUpdateChecked=(skuId,isChecked)=>requests({url:`/cart/checkCart/${skuId}/${isChecked}`,method:'get'});
+export const reqUpdateChecked=(skuId,isChecked)=>requests({url:`/cart/checkCart/${skuId}/${isChecked}`,method:'get'})
+//删除某一个商品的接口
+export const reqDeleteCart = (skuId)=>requests({url:`/cart/deleteCart/${skuId}`,method:'delete'})
+
+
+//获取订单详情信息
+export const reqShopInfo = () => requests({url:'/order/auth/trade',method:'get'}) 

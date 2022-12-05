@@ -27,15 +27,15 @@
 						<span class="price">{{ cartInfo.skuPrice }}</span>
 					</li>
 					<li class="cart-list-con5">
-						<a href="javascript:void(0)" class="mins">-</a>
-						<input autocomplete="off" type="text" :value="cartInfo.skuNum" minnum="1" class="itxt">
-						<a href="javascript:void(0)" class="plus">+</a>
+						<a href="javascript:void(0)" class="mins" @click="minsSkuNum(cartInfo)">-</a>
+						<input autocomplete="off" type="text" :value="cartInfo.skuNum" minnum="1" class="itxt" @change="changeSkuNum(cartInfo,$event)">
+						<a href="javascript:void(0)" class="plus" @click="addSkuNum(cartInfo)">+</a>
 					</li>
 					<li class="cart-list-con6">
 						<span class="sum">{{ cartInfo.skuPrice * cartInfo.skuNum }}</span>
 					</li>
 					<li class="cart-list-con7">
-						<a href="#none" class="sindelet">删除</a>
+						<a href="javascript:" class="sindelet" @click="deleteCartById(cartInfo)">删除</a>
 						<br>
 						<a href="#none">移到收藏</a>
 					</li>
@@ -102,11 +102,15 @@
 		</div>
 		<div class="cart-tool">
 			<div class="select-all">
-				<input class="chooseAll" type="checkbox" :checked="isCartChecked && cartInfoList.length > 0">
+				<input 
+				class="chooseAll" 
+				type="checkbox" 
+				:checked="isCartChecked && cartInfoList.length > 0" 
+				@click="allUpdateChecked">
 				<span>全选</span>
 			</div>
 			<div class="option">
-				<a href="#none">删除选中的商品</a>
+				<a href="javascript:" @click="deleteAllCart">删除选中的商品</a>
 				<a href="#none">移到我的关注</a>
 				<a href="#none">清除下柜商品</a>
 			</div>
@@ -119,7 +123,7 @@
 					<i class="summoney">{{ totalPrice }}</i>
 				</div>
 				<div class="sumbtn">
-					<a class="sum-btn" href="###" target="_blank">结算</a>
+					<router-link class="sum-btn" to="/trade">结算</router-link> 
 				</div>
 			</div>
 		</div>
@@ -127,9 +131,11 @@
 </template>
 
 <script>
-import {
-	mapGetters
-} from "vuex"
+import {mapGetters} from "vuex"
+//按需引入lodash节流函数
+import throttle from "lodash/throttle";
+//按需引入lodash防抖函数
+import debounce from "lodash/debounce";
 
 export default {
 	name: 'ShopCart',
@@ -191,6 +197,91 @@ export default {
 				alert('修改商品选择状态失败')
 			}
 		},
+		//全选的业务
+		async allUpdateChecked(e) {
+		  //获取全选的复选框勾选的状态,接口需要的1|0
+		  let isChecked = e.target.checked ? "1" : "0"
+		  try {
+		    //await等待成功:购物车全部商品勾选状态成功以后
+		    let result = await this.$store.dispatch("allUpdateChecked", isChecked)
+		    this.getData()
+		  } catch (error) {
+		    alert('全选商品修改失败')
+		  }
+		},
+		//修改商品数据->加的操作
+		async addSkuNum(cart) {
+		  //整理参数
+		  let params = { skuId: cart.skuId, skuNum: 1 }
+		  //发请求:通知服务器修改当前商品的个数
+		  //再次获取购物车的最新的数据：保证这次修改数据完毕【成功以后在获取购物车数据】
+		  try {
+		    //修改商品个数成功
+		    await this.$store.dispatch("addOrUpdateCart", params)
+		    //再次获取最新的购物车的数据
+		    this.getData()
+		  } catch (error) {
+		    alert("添加数量失败")
+		  }
+		},
+		//修改商品数据-减的操作
+		minsSkuNum: throttle(async function (cart) {
+		  if (cart.skuNum > 1) {
+		    //整理参数:至少加入购物车的数量最低1个
+		    let params = { skuId: cart.skuId, skuNum: -1 }
+		    //修改商品的数据
+		    try {
+		      //修改商品的个数、成功以后再次获取购物车的数据
+		      await this.$store.dispatch("addOrUpdateCart", params)
+		      this.getData()
+		    } catch (error) {
+				alert("减少数量失败")
+			}
+		  }
+		}, 2000),
+		changeSkuNum: debounce(async function (cart, e) {
+		  //整理参数
+		  let params = { skuId: cart.skuId };
+		  //计算出SkuNum携带的数据
+		  let userResultValue = e.target.value * 1;
+		  //用户输入完毕，最终结果【非法条件】
+		  if (isNaN(userResultValue) || userResultValue < 1) {
+		    params.skuNum = 0;
+		  } else {
+		    //正常情况
+		    params.skuNum = parseInt(userResultValue) - cart.skuNum;
+		  }
+		  //发请求：修改商品的个数
+		  try {
+		    //修改商品的个数、成功以后再次获取购物车的数据
+		    await this.$store.dispatch("addOrUpdateCart", params);
+		    this.getData();
+		  } catch (error) {}
+		}, 500),
+		//删除某一个商品
+		async deleteCartById(cart) {
+		  //整理参数
+		  let skuId = cart.skuId;
+		  try {
+		    //删除商品成功
+		    await this.$store.dispatch("deleteCartById", skuId);
+		    //再次获取购物车最新的数据
+		    this.getData();
+		  } catch (error) {
+		    alert("删除失败");
+		  }
+		},
+		//删除选中的商品
+		async deleteAllCart(){
+		   try {
+		     //等待全部勾选商品删除以后
+		     await  this.$store.dispatch('deleteAllCart');
+		     //再次获取购物车的数据
+		     this.getData();
+		   } catch (error) {
+		     alert('删除失败');
+		   }
+		}
 	}
 }
 </script>
