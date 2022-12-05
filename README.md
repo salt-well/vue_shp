@@ -1,5 +1,19 @@
 # vue_shp文档
 
+##0.GitHub提交使用方法
+  1.远程添加
+```
+   git init   //初始化仓库
+   git remote add origin git@github.com:salt-well/vue_shp.git  //origin远程地址别名
+   git remote -v //查看远程连接的仓库别名
+   git config --global user.email "you@example.com"
+   git config --global user.name "Your name"
+   git add .    //添加当前目录的所有文件
+   git status   //查看提交的状态
+   git commit -m "首次提交github" //这是提交至本地仓库版本
+   git push -u origin master //提交至github  
+```
+##0.1 npm安装依赖方法
 ```
 cnpm install --save less less-loader //安装less,less-loadr安装[五版本的]  
 
