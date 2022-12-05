@@ -1,6 +1,7 @@
 # vue_shp文档
 
-##0.GitHub提交使用方法
+## 0.GitHub提交使用方法
+
   1.远程添加
 ```
    git init   //初始化仓库
@@ -13,7 +14,7 @@
    git commit -m "首次提交github" //这是提交至本地仓库版本
    git push -u origin master //提交至github  
 ```
-##0.1 npm安装依赖方法
+## 0.1 npm安装依赖方法
 ```
 cnpm install --save less less-loader //安装less,less-loadr安装[五版本的]  
 
