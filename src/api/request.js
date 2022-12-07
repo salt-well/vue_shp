@@ -30,6 +30,10 @@ requests.interceptors.request.use((config)=>{
 	   config.headers.userTempId = store.state.shopcart.USER_ID
    }
    
+   //3.请求拦截:用户登录，当有token有值时为headers加上临时请求头token
+   if(store.state.user.token){
+	   config.headers.token = store.state.user.token
+   }
 
    return config
 },(error)=>{

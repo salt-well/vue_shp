@@ -8,23 +8,24 @@
       </h3>
       <div class="content">
         <label>手机号:</label>
-        <input type="text" placeholder="请输入你的手机号">
+        <input type="text" placeholder="请输入你的手机号" v-model="phone">
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="content">
         <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码">
-        <img ref="code" src="http://182.92.128.115/api/user/passport/code" alt="code">
+        <input type="text" placeholder="请输入验证码" v-model="code">
+        <!-- <img ref="code" src="http://gmall-h5-api.atguigu.cn/api/user/passport/code" alt="code" > -->
+		<button style="height: 38px" @click="getCode">获取验证码</button>
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="content">
         <label>登录密码:</label>
-        <input type="text" placeholder="请输入你的登录密码">
+        <input type="password" placeholder="请输入你的登录密码" v-model="password">
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="content">
         <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码">
+        <input type="password" placeholder="请输入确认密码" v-model="password1">
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="controls">
@@ -33,7 +34,7 @@
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="btn">
-        <button>完成注册</button>
+        <button @click="register">完成注册</button>
       </div>
     </div>
 
@@ -58,7 +59,56 @@
 
 <script>
   export default {
-    name: 'Register'
+    name: 'Register',
+	data(){
+		return {
+			phone:'',
+			code:'',
+			password:'',
+			password1:''
+		}
+	},
+	methods:{
+		//获取验证码按钮的回调
+		async getCode() {
+		  const { phone } = this;
+		  //先不处理表单验证业务
+		  if (phone) {
+		    try {
+		      //获取验证码成功
+		      await this.$store.dispatch("getCode", phone);
+		      //修改VC身上的code属性,让验证码自动展示
+		      this.code = this.$store.state.user.code;
+		    } 
+			catch (error) {
+				
+			}
+		  }else{
+			  alert('请输入手机号')
+		  }
+		},
+		//注册按钮的回调
+		async register() {
+		  //解构出参数
+		  const { phone, code, password, password1 } = this;
+		  console.log({ phone, code, password, password1 })
+		  //目前不做表单验证
+		  if (phone && code && password == password1) {
+		    //通知vuex发请求，进行用户的注册
+		    try {
+		      //注册成功
+		      await this.$store.dispatch("registerUser", { phone, code, password });
+		      //让用户跳转到登录页面进行登录
+		      this.$router.push('/login');
+		    } catch (error) {
+		      //注册失败
+		      alert(error.message);
+		    }
+		  }else{
+			  alert('密码验证密码不正确')
+		  }
+		},
+	}
   }
 </script>
 
