@@ -1,5 +1,6 @@
 //用户登录、注册小仓库
 import {reqRegister,reqGetCode,reqUserLogin,reqUserInfo,reqUserLogout} from "@/api"
+import {setToken,getToken,removeToken} from '@/utils/TOKEN'
 
 let actions = {
 	//获取验证码
@@ -43,7 +44,7 @@ let actions = {
 	     if (result.code == 200) {
 	          commit('SET_TOKEN', result.data.token);
 	          //以后开发的时候:经常的登录的成功获取token【持久化存储】
-	          localStorage.setItem('TOKEN', result.data.token);
+	          setToken(result.data.token);
 	          return 'ok';
 	     } else {
 	          //登录失败
@@ -54,9 +55,9 @@ let actions = {
 	//获取用户信息
 	async getUserInfo({ commit, state, dispatch }) {
 	     let result = await reqUserInfo();
-		 console.log('用户acitons:',result)
+		 //console.log('用户acitons:',result)
 	     if (result.code == 200) {
-	          commit('SET_USERINFO', result.data.nickName);
+	          commit('SET_USERINFO', result.data);
 	          return 'ok';
 	     } else {
 	          return Promise.reject();
@@ -81,15 +82,14 @@ let mutations = {
 	SET_TOKEN(state,token){
 		state.token = token
 	},
-	SET_USERINFO(state,nickName){
-		state.nickName = nickName
-		console.log('用户mutations:',state.nickName)
+	SET_USERINFO(state,userInfo){
+		state.userInfo = userInfo
 	},
 	CLEAR(state){
         //移除用户身份标识符
-		localStorage.removeItem('TOKEN')
+		removeToken()
 		//清空用户名
-		state.nickName = ''
+		state.userInfo = {}
 		state.token = ''
 	}
 }
@@ -97,9 +97,9 @@ let state = {
 	//验证码
 	code: '',
 	//身份标识符很重要【存储在vuex】
-	token: localStorage.getItem("TOKEN"),
-	//用户名
-	nickName: ''
+	token: getToken(),
+	//登录的用户信息
+	userInfo: {}
 }
 let getters = {}
 

@@ -5,21 +5,21 @@
             <div class="container">
                 <div class="loginList">
                     <p>尚品汇欢迎您！</p>
-                    <p v-if="!$store.state.user.nickName">
+                    <p v-if="!$store.state.user.userInfo.nickName">
                         <span>请</span>
                         <!--声明式导航:务必要有to属性-->
                         <router-link to="/login">登录</router-link>
                         <router-link to="/register" class="register">免费注册</router-link>
                     </p>
 					<p v-else>
-						<a>{{$store.state.user.nickName}}</a>
+						<a>{{$store.state.user.userInfo.nickName}}</a>
 						<a class="register" @click="logout">退出登录</a>
 					</p>
                 </div>
                 <div class="typeList">
-                    <a href="###">我的订单</a>
+                    <router-link to="/trade">我的订单</router-link>
                     <a href="###">我的购物车</a>
-                    <a href="###">我的尚品汇</a>
+                    <router-link to="/paysuccess">订单成功</router-link>
                     <a href="###">尚品汇会员</a>
                     <a href="###">企业采购</a>
                     <a href="###">关注尚品汇</a>
