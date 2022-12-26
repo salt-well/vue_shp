@@ -20,6 +20,7 @@ cnpm install --save less less-loader //安装less,less-loadr安装[五版本的]
 
 npm install --legacy-peer-deps vue-router@4.0.13  //安装vue-router报错因为版本太高，用这个安装指定的版本
 ```
+## 0.2Vuepress可用来搭建文档n
 
 ## 三级联动lodash防抖与节流
 
@@ -126,6 +127,20 @@ pubsub-js:vue当中几乎不用 全能
   1).vuex中的getters属性通常用于简化属性
   2).当属性如this.searchParmas.categoryId = undefined,则不会给服务器发送请求
   3).Pagination分页页码写出逻辑，从简单到复杂一步一步拆解出来(pageNo、total、pagerCount)
+  4).图片懒加载 vue-lazyload
+  
+## 9.登录模块、注册模块  
+  
+  1.用户登录获取token,查询信息通过token配置请求header识别用户身份信息
+  2.注册使用
+  
+## 10.打包
+   //vue.config.js中打包配置是否生成map文件,true:是
+   //swagger,文档接口生成
+   productionSourceMap:true, 
+```
+   npm run build
+```
 
 
 

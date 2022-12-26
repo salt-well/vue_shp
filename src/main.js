@@ -52,6 +52,19 @@ Vue.prototype.$msgbox = MessageBox;
 //消息提示框
 Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$message = Message;
+//8.图片懒加载
+import loadimage from '@/assets/loading.gif'
+// or with options
+//const loadimage = require('./assets/loading.gif')
+//引入插件
+import VueLazyload from 'vue-lazyload'
+//注册插件:增加v-lazy:全局指令
+Vue.use(VueLazyload, {
+  //preLoad: 1.3,
+  //error: errorimage,
+  loading: loadimage, //默认加载的图片
+  //attempt: 1
+})
 
 
 

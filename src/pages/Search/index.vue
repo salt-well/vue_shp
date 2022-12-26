@@ -66,7 +66,11 @@
                 <div class="list-wrap">
                   <div class="p-img">
                     <!-- <a href="item.html" target="_blank"><img :src="good.defaultImg" /></a> -->
-                    <router-link :to="`/detail/${good.id}`"><img :src="good.defaultImg" /></router-link>
+                    <router-link :to="`/detail/${good.id}`">
+						<!--原来的绑定 <img :src="good.defaultImg" /> -->
+						<!--v-lazy全局指令实现图片懒加载-->
+						<img v-lazy="good.defaultImg" />
+					</router-link>
                   </div>
                   <div class="price">
                     <strong>
